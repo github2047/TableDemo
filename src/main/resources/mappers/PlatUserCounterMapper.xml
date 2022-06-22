@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.tabledemo.mapper.PlatUserCounterMapper">
+<!--    <select id="selectAll" resultType="com.example.tabledemo.pojo.PlatUserCounter">-->
+<!--        select-->
+<!--        c.id,-->
+<!--        c.DeviceID,-->
+<!--        c.userid,-->
+<!--        c.deptid,-->
+<!--        c.Total,-->
+<!--        c.ColorTotal,-->
+<!--        c.ScanFaxScans,-->
+<!--        c.MonochromeTotal,-->
+<!--        c.CopyFullColor,-->
+<!--        c.FaxTx,-->
+<!--        c.FaxRx,-->
+<!--        c.DuplexTotal,-->
+<!--        c.NumberOfOriginals,-->
+<!--        c.CopyBlackLarge,-->
+<!--        c.SheetsOfPrints,-->
+<!--        c.PrintTotalLarge,-->
+<!--        c.PrintFullColorLarge,-->
+<!--        c.rectime,-->
+<!--        c.isReport,-->
+<!--        u.userName as userName,-->
+<!--        d.departName as deptName-->
+<!--        from plat_user_counter c-->
+<!--            left join plat_user u on c.userid=u.id-->
+<!--            left join plat_dapertment d on c.deptid=d.id-->
+<!--            <where>-->
+<!--                <if test="deviceIds != null and deviceIds !='' and deviceIds.size()!=0">-->
+<!--                    and c.DeviceID in-->
+<!--                    <foreach collection="deviceIds" item="item" index="index" open="(" separator="," close=")">-->
+<!--                        #{item}-->
+<!--                    </foreach>-->
+<!--                </if>-->
+<!--                <if test="userIds != null and userIds !='' and userIds.size()!=0">-->
+<!--                    and c.userid in-->
+<!--                    <foreach collection="userIds" item="item" index="index" open="(" separator="," close=")">-->
+<!--                        #{item}-->
+<!--                    </foreach>-->
+<!--                </if>-->
+<!--                <if test="deptIds != null and deptIds !='' and deptIds.size()!=0">-->
+<!--                    and c.deptid in-->
+<!--                    <foreach collection="deptIds" item="item" index="index" open="(" separator="," close=")">-->
+<!--                        #{item}-->
+<!--                    </foreach>-->
+<!--                </if>-->
+<!--                <if test="start != null and start !='' and start!='undefined'  and end != null and end !='' and end!='undefined'">-->
+<!--                    and c.rectime between #{start} and #{end}-->
+<!--                </if>-->
+<!--            </where>-->
+<!--            order by-->
+<!--                <choose>-->
+<!--                    <when test="prop == 'c.deviceId' || prop == 'c.rectime' || prop == 'u.userName' || prop == 'd.departName'">-->
+<!--                        ${prop}-->
+<!--                    </when>-->
+<!--                    <otherwise>-->
+<!--                        cast(${prop} as SIGNED)-->
+<!--                    </otherwise>-->
+<!--                </choose>-->
+<!--                ${order}-->
+<!--    </select>-->
+    <select id="selectAll" resultType="com.example.tabledemo.pojo.PlatUserCounter">
+        select
+        c.id,
+        c.DeviceID,
+        c.userid,
+        c.deptid,
+        c.Total,
+        c.ColorTotal,
+        c.ScanFaxScans,
+        c.MonochromeTotal,
+        c.CopyFullColor,
+        c.FaxTx,
+        c.FaxRx,
+        c.DuplexTotal,
+        c.NumberOfOriginals,
+        c.CopyBlackLarge,
+        c.SheetsOfPrints,
+        c.PrintTotalLarge,
+        c.PrintFullColorLarge,
+        c.rectime,
+        c.isReport,
+        u.userName as userName,
+        d.departName as deptName,
+        d.parentId as parentId,
+        bp.ip as deviceIp,
+        bp.devname as deviceName
+        from plat_user_counter c
+        left join plat_user u on c.userid=u.id
+        left join plat_dapertment d on c.deptid=d.id
+        left join biz_printdev bp on c.DeviceID=bp.mac
+        <where>
+            <if test="deviceName != null and deviceName !=''">
+                and bp.devname like '%${deviceName}%'
+            </if>
+            <if test="deviceIp != null and deviceIp !=''">
+                and bp.ip like '%${deviceIp}%'
+            </if>
+            <if test="userName != null and userName !=''">
+                and u.userName like '%${userName}%'
+            </if>
+            <if test="deptName != null and deptName !=''">
+                and d.departName like '%${deptName}%'
+            </if>
+            <if test="start != null and start !='' and start!='undefined'  and end != null and end !='' and end!='undefined'">
+                and c.rectime between #{start} and #{end}
+            </if>
+        </where>
+        order by
+        <choose>
+            <when test="prop == 'c.deviceId' || prop == 'c.rectime' || prop == 'u.userName' || prop == 'd.departName'">
+                ${prop}
+            </when>
+            <otherwise>
+                cast(${prop} as SIGNED)
+            </otherwise>
+        </choose>
+        ${order}
+    </select>
+
+</mapper>

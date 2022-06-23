@@ -43,33 +43,39 @@
                 <el-table
                     :data="tableData"
                     border
+                    highlight-current-row
                     @sort-change="sortChange"
                     size="mini"
                     style="width: 100%;">
                   <el-table-column
+                      align="center"
                       type="index"
                       width="50">
                   </el-table-column>
                   <el-table-column
+                      align="center"
                       sortable="custom"
                       prop="deptName"
                       label="部门名称"
                       show-overflow-tooltip
-                      width="150">
+                  >
                     <template slot-scope="scope">
                       <span>{{scope.row.deptName==null?'未知部门':scope.row.deptName}}</span>
                     </template>
                   </el-table-column>
                   <el-table-column
+                      align="center"
                       sortable="custom"
                       prop="userName"
                       label="用户名称"
-                      width="180">
+                      show-overflow-tooltip
+                  >
                     <template slot-scope="scope">
                       <span>{{scope.row.userName==null?'未知用户':scope.row.userName}}</span>
                     </template>
                   </el-table-column>
                   <el-table-column
+                      align="center"
                       sortable="custom"
                       prop="deviceIp"
                       label="设备IP"
@@ -81,28 +87,33 @@
 <!--                      width="180">-->
 <!--                  </el-table-column>-->
                   <el-table-column
+                      align="center"
                       sortable="custom"
                       prop="deviceName"
                       label="设备名称"
-                      width="180">
+                      show-overflow-tooltip
+                  >
                   </el-table-column>
                   <el-table-column
+                      align="center"
                       sortable="custom"
                       prop="monochromeTotal"
                       label="单色总数"
                       width="100">
                   </el-table-column>
                   <el-table-column
+                      align="center"
                       sortable="custom"
                       prop="colorTotal"
                       label="彩色总数"
-                      width="100">
+                     >
                   </el-table-column>
                   <el-table-column
+                      align="center"
                       sortable="custom"
                       prop="scanFaxScans"
                       label="扫描总数"
-                      width="100">
+                      >
                   </el-table-column>
 <!--                  <el-table-column-->
 <!--                      sortable="custom"-->
@@ -129,22 +140,26 @@
 <!--                      width="170">-->
 <!--                  </el-table-column>-->
                   <el-table-column
+                      align="center"
                       sortable="custom"
                       prop="singleTotal"
                       label="单面总数"
-                      width="100">
+                      >
                   </el-table-column>
                   <el-table-column
+                      align="center"
                       sortable="custom"
                       prop="duplexTotal"
                       label="双面总数"
-                      width="100">
+                      >
                   </el-table-column>
                   <el-table-column
+                      align="center"
                       sortable="custom"
                       prop="allTotal"
                       label="总计(单色+彩色+扫描)"
-                      width="180">
+                      width="180"
+                      >
                   </el-table-column>
 <!--                  <el-table-column-->
 <!--                      sortable="custom"-->
@@ -177,6 +192,7 @@
 <!--                      width="180">-->
 <!--                  </el-table-column>-->
                   <el-table-column
+                      align="center"
                       sortable="custom"
                       prop="rectime"
                       label="完成时间"
@@ -190,10 +206,9 @@
                   :page-size="pageSize"
                   :current-page="pageNo"
                   :page-sizes="[15,20,30,40,50]"
-                  @size-change="handleSizeChange"
                   @current-change="handleCurrentChange"
+                  @size-change="handleSizeChange"
                   background
-                  small
                   :pager-count=5
                   layout="total, sizes, prev, pager, next, jumper"
                   :total="total">
@@ -228,9 +243,8 @@ module.exports = {
   },
   methods:{
     getTableInfo(prop,order){
-      if(this.boxLoading){
-        return;
-      }
+      console.log("p1",this.pageNo)
+      console.log("p1",this.pageSize)
       this.boxLoading=true;
       let start="";
       let end=""
@@ -242,6 +256,8 @@ module.exports = {
         end=this.times[1];
       }
       // setTimeout(r=>{
+      console.log("p2:",this.pageNo)
+      console.log("p2:",this.pageSize)
         axios.post("/platUserCounter/selectAll", {
           "deviceName":this.deviceName,
           "deviceIp":this.deviceIp,
@@ -257,7 +273,6 @@ module.exports = {
           if(data.code==200) {
             this.total = data.data.total
             this.tableData = data.data.list;
-            console.log(this.tableData)
           }else{
             ElMessage.error(data.msg)
           }
@@ -273,18 +288,20 @@ module.exports = {
         "id":dept.parentId
       }).then(r=>{
         deptName=r.data.departName+"/"+deptName
-        // console.log("parentId",r.data.parentId)
         if(r.data.parentId!=0 && r.data.parentId!=null){
           this.getDept(r.data,deptName);
           return;
         }
-        console.log("name",deptName)
       }).catch(e=>{
         ElMessage.error(e.message);
       })
       return deptName;
     },
     search(){
+      if(this.boxLoading){
+        return;
+      }
+      this.pageNo=1;
       this.getTableInfo()
     },
     handleSizeChange(value){
@@ -306,7 +323,7 @@ module.exports = {
         end="";
       }
       if(start==""||end==""||start==null||end==null||start=="undefined"||end=="undefined"){
-        ElMessage.error("请选择导出的时间范围")
+        ElMessage.warning("请选择导出的时间范围")
       }else{
         this.$confirm('你要导出的是'+start+'到'+end+'的数据，请确定是否正确', '提示', {
           closeOnClickOutside: false,
@@ -333,7 +350,6 @@ module.exports = {
               "start":start,
               "end":end
             },{ responseType:"arraybuffer"}).then(res=>{
-              console.log(res)
              try{
                let blob=new Blob([res.data], {type:"application/vnd.ms-excel"})
                const link=document.createElement('a');
@@ -383,5 +399,8 @@ module.exports = {
 }
 .con .el-scrollbar__wrap {
   overflow-x: hidden;
+}
+.el-table--striped .el-table__body tr.el-table__row--striped.current-row td, .el-table__body tr.current-row>td {
+  background-color: #fff9c7 !important;
 }
 </style>

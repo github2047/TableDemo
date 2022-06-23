@@ -54,6 +54,7 @@ public class PlatUserCounterImpl implements PlatUserCounterService {
         if(order.equals("descending")) {
             order = "desc";
         }
+        System.out.println(pageNo+","+pageSize);
         PageHelper.startPage(pageNo, pageSize);
         List<PlatUserCounter> list = platUserCounterMapper.selectAll(deviceName,deviceIp, userName, deptName, start, end,prop,order);
         if(list.size()>0) {
@@ -66,6 +67,7 @@ public class PlatUserCounterImpl implements PlatUserCounterService {
             }
         }
         PageInfo<PlatUserCounter> platUserCounterPageInfo=new PageInfo<>(list);
+        System.out.println(platUserCounterPageInfo);
         return platUserCounterPageInfo;
     }
     public String getDept(List<PlatDapertment> list, Integer parentId){

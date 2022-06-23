@@ -36,25 +36,27 @@ public class ExportExcel {
             HSSFSheet sheet = workbook.createSheet(title);
             sheet.setColumnWidth(0,3000);
             sheet.setColumnWidth(1,8000);
-            sheet.setColumnWidth(2,6000);
+            sheet.setColumnWidth(2,8000);
             sheet.setColumnWidth(3,8000);
             sheet.setColumnWidth(4,8000);
-            sheet.setColumnWidth(5,8000);
+            sheet.setColumnWidth(5,6000);
             sheet.setColumnWidth(6,5000);
             sheet.setColumnWidth(7,5000);
             sheet.setColumnWidth(8,5000);
-            sheet.setColumnWidth(9,5000);
-            sheet.setColumnWidth(10,8000);
+            sheet.setColumnWidth(9,8000);
+            sheet.setColumnWidth(10,5000);
             sheet.setColumnWidth(11,8000);
             sheet.setColumnWidth(12,8000);
-            sheet.setColumnWidth(13,5000);
-            sheet.setColumnWidth(14,6000);
-            sheet.setColumnWidth(15,6000);
+            sheet.setColumnWidth(13,8000);
+            sheet.setColumnWidth(14,5000);
+            sheet.setColumnWidth(15,5000);
             sheet.setColumnWidth(16,6000);
-            sheet.setColumnWidth(17,6500);
+            sheet.setColumnWidth(17,6000);
             sheet.setColumnWidth(18,6000);
-            sheet.setColumnWidth(19,8000);
-            sheet.setColumnWidth(20,8000);
+            sheet.setColumnWidth(19,6500);
+            sheet.setColumnWidth(20,6000);
+            sheet.setColumnWidth(21,8000);
+            sheet.setColumnWidth(22,8000);
             sheet.setDefaultRowHeight((short) 500);
 
             //表名
@@ -110,7 +112,7 @@ public class ExportExcel {
             cell.setCellValue("合计");
             cell.setCellStyle(style);
             //合计
-            for(int k=6;k<19;k++){
+            for(int k=6;k<21;k++){
                 HSSFCell cell1=null;
                 cell1 = row.createCell(k, CellType.STRING);
                 Integer sum=0;
@@ -123,7 +125,7 @@ public class ExportExcel {
             }
             //创建折叠组
             sheet.groupRow(3,dataList.size()+2);
-            sheet.setRowGroupCollapsed(3,true);
+            sheet.setRowGroupCollapsed(3,false);
 
             //10.输出Excel文件
             if (workbook != null) {

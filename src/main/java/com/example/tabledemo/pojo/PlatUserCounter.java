@@ -20,16 +20,16 @@ public class PlatUserCounter {
   private String deptid;
   private String total;
   private String copyTotal;
-  private String colorTotal;
+  private Integer colorTotal;
   private String scanFaxPrintFullColor;
   private String scanFaxScansLarge;
   private String scanFaxPrintFullColorLarge;
-  private String scanFaxScans;
+  private Integer scanFaxScans;
   private String scanFaxPrintBlack;
   private String scanFaxPrintLarge;
   private String copyFullColorLarge;
   private String copyTotalLarge;
-  private String monochromeTotal;
+  private Integer monochromeTotal;
   private String copy2Color;
   private String copy2ColorLarge;
   private String copySingleColor;
@@ -89,4 +89,6 @@ public class PlatUserCounter {
   private String deviceName;
   private String deviceIp;
   private Integer parentId;
+  private Integer singleTotal;
+  private Integer allTotal;
 }

@@ -51,6 +51,7 @@
                       width="50">
                   </el-table-column>
                   <el-table-column
+                      sortable="custom"
                       prop="deptName"
                       label="部门名称"
                       show-overflow-tooltip
@@ -60,6 +61,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
+                      sortable="custom"
                       prop="userName"
                       label="用户名称"
                       width="180">
@@ -68,19 +70,27 @@
                     </template>
                   </el-table-column>
                   <el-table-column
+                      sortable="custom"
                       prop="deviceIp"
                       label="设备IP"
                       width="180">
                   </el-table-column>
+<!--                  <el-table-column-->
+<!--                      prop="deviceId"-->
+<!--                      label="设备mac地址"-->
+<!--                      width="180">-->
+<!--                  </el-table-column>-->
                   <el-table-column
-                      prop="deviceId"
-                      label="设备mac地址"
-                      width="180">
-                  </el-table-column>
-                  <el-table-column
+                      sortable="custom"
                       prop="deviceName"
                       label="设备名称"
                       width="180">
+                  </el-table-column>
+                  <el-table-column
+                      sortable="custom"
+                      prop="monochromeTotal"
+                      label="单色总数"
+                      width="100">
                   </el-table-column>
                   <el-table-column
                       sortable="custom"
@@ -94,18 +104,12 @@
                       label="扫描总数"
                       width="100">
                   </el-table-column>
-                  <el-table-column
-                      sortable
-                      prop="monochromeTotal"
-                      label="单色总数"
-                      width="100">
-                  </el-table-column>
-                  <el-table-column
-                      sortable="custom"
-                      prop="total"
-                      label="总数"
-                      width="100">
-                  </el-table-column>
+<!--                  <el-table-column-->
+<!--                      sortable="custom"-->
+<!--                      prop="total"-->
+<!--                      label="总数"-->
+<!--                      width="100">-->
+<!--                  </el-table-column>-->
 <!--                  <el-table-column-->
 <!--                      sortable="custom"-->
 <!--                      prop="copyFullColor"-->
@@ -126,9 +130,21 @@
 <!--                  </el-table-column>-->
                   <el-table-column
                       sortable="custom"
-                      prop="duplexTotal"
-                      label="双工总数"
+                      prop="singleTotal"
+                      label="单面总数"
                       width="100">
+                  </el-table-column>
+                  <el-table-column
+                      sortable="custom"
+                      prop="duplexTotal"
+                      label="双面总数"
+                      width="100">
+                  </el-table-column>
+                  <el-table-column
+                      sortable="custom"
+                      prop="allTotal"
+                      label="总计(单色+彩色+扫描)"
+                      width="180">
                   </el-table-column>
 <!--                  <el-table-column-->
 <!--                      sortable="custom"-->
@@ -241,6 +257,7 @@ module.exports = {
           if(data.code==200) {
             this.total = data.data.total
             this.tableData = data.data.list;
+            console.log(this.tableData)
           }else{
             ElMessage.error(data.msg)
           }
@@ -306,7 +323,7 @@ module.exports = {
             return;
           }
           this.exclLoading=true;
-          setTimeout(r=>{
+          // setTimeout(r=>{
             axios.post("/platUserCounter/exportExcl",{
               "excelTitle":"用户报表",
               "deviceName":this.deviceName,
@@ -315,14 +332,28 @@ module.exports = {
               "deptName":this.deptName,
               "start":start,
               "end":end
-            }).then(({data})=>{
-
+            },{ responseType:"arraybuffer"}).then(res=>{
+              console.log(res)
+             try{
+               let blob=new Blob([res.data], {type:"application/vnd.ms-excel"})
+               const link=document.createElement('a');
+               let _fileName = "用户报表.xls"
+               link.style.display='none';
+               // 兼容不同浏览器的URL对象
+               const url = window.URL || window.webkitURL || window.moxURL;
+               link.href=url.createObjectURL(blob);
+               link.download = _fileName;
+               link.click();
+               window.URL.revokeObjectURL(url);
+             }catch (e){
+               ElMessage.error("下载文件出错",e)
+             }
             }).catch(e=>{
               ElMessage.error(e.message)
             }).finally(f=>{
               this.exclLoading=false;
             })
-          },2000)
+          // },2000)
         });
       }
     },

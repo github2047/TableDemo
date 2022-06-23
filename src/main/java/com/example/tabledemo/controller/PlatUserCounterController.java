@@ -62,10 +62,10 @@ public Map<Object, Object> selectAll(@RequestBody Map maps) {
     @RequestMapping("/platUserCounter/exportExcl")
     @ResponseBody
     public void prodTest(HttpServletResponse response,@RequestBody Map map) throws IOException {
-        System.out.println(map);
         // 创建导出文件名称 当前日期+前台传递过来的标题名（excelTitle）
         String fileName =map.get("excelTitle")+"("+DateUtils.format(new Date(),"yyyy-MM-dd")+")"+".xls";
         // 设置返回的消息头和返回值类型 并设置编码 不设置编码文件名为中文的话 不会显示
+        response.setCharacterEncoding("utf-8");
         // 当设置成如下返回值时，浏览器才会执行下载文件动作
         response.setHeader("Content-disposition", "attachment; filename=" + URLEncoder.encode(fileName, "UTF-8"));
         response.setContentType("APPLICATION/OCTET-STREAM;charset=UTF-8");

@@ -32,11 +32,20 @@ public class PlatUserCounterImpl implements PlatUserCounterService {
         }else if(prop.equals("userName")){
             prop="u.userName";
         }else if(prop.equals("deptName")){
-            prop="d.deptName";
+            prop="deptName";
+        }else if(prop.equals("allTotal")){
+            prop="allTotal";
+        }else if(prop.equals("singleTotal")){
+            prop="singleTotal";
+        }else if(prop.equals("deviceName")){
+            prop="deviceName";
+        }else if(prop.equals("deviceIp")){
+            prop="deviceIp";
         }else{
             prop="c."+prop;
         }
-        if(null==order||order.equals("undefined")||order.equals("")){
+        if(null==order||order.equals("undefined")||order.equals("")||order.equals("null")){
+            prop="c.id";
             order="asc";
         }
         if(order.equals("ascending")) {
@@ -44,11 +53,6 @@ public class PlatUserCounterImpl implements PlatUserCounterService {
         }
         if(order.equals("descending")) {
             order = "desc";
-        }
-
-        if(order.equals("null") ){
-            prop="c.id";
-            order = "asc";
         }
         PageHelper.startPage(pageNo, pageSize);
         List<PlatUserCounter> list = platUserCounterMapper.selectAll(deviceName,deviceIp, userName, deptName, start, end,prop,order);
@@ -80,7 +84,7 @@ public class PlatUserCounterImpl implements PlatUserCounterService {
     @Override
     public void exportTest(OutputStream out, String excelTitle,String start,String end,List<PlatUserCounter> list) {
         // 定义列标
-        String[] rowsName = new String[]{"id", "设备Mac地址","设备名称","设备IP", "用户名", "部门名", "总数", "彩色总数", "扫描总数", "单色总数", "以全彩复制的总页数", "已发送传真中的总页数", "已接收传真中的总页数", "双工总数", "显示原始页面的总数", "以黑色复制的总页数", "已打印的纸张总数", "所有颜色打印的总页数", "以全彩打印的总页数", "完成时间", "是否需要上传至中央服务器"};
+        String[] rowsName = new String[]{"id", "部门名","用户名","设备IP", "设备Mac地址", "设备名称", "彩色总数", "扫描总数", "单色总数","合计（单色+彩色+扫描）", "总数", "以全彩复制的总页数", "已发送传真中的总页数", "已接收传真中的总页数", "双面总数","单面总数", "显示原始页面的总数", "以黑色复制的总页数", "已打印的纸张总数", "所有颜色打印的总页数", "以全彩打印的总页数", "完成时间", "是否需要上传至中央服务器"};
         // 创建导出数据集合 后续会将dataList中的数据写到Excel
         List<Object[]> dataList = new ArrayList<Object[]>();
         List<PlatUserCounter> platUserCounterList = list;
@@ -95,8 +99,8 @@ public class PlatUserCounterImpl implements PlatUserCounterService {
                 case "1": platUserCounter.setIsReport("已上传");break;
                 case "2": platUserCounter.setIsReport("已更新需要上传");break;
             }
-            Object[] objs = new Object[]{platUserCounter.getId(),platUserCounter.getDeviceId(),platUserCounter.getDeviceName(),platUserCounter.getDeviceIp(),platUserCounter.getUserName(),platUserCounter.getDeptName(),platUserCounter.getTotal(),platUserCounter.getColorTotal(),platUserCounter.getScanFaxScans(),
-            platUserCounter.getMonochromeTotal(),platUserCounter.getCopyFullColor(),platUserCounter.getFaxTx(),platUserCounter.getFaxRx(),platUserCounter.getDuplexTotal(),platUserCounter.getNumberOfOriginals(),platUserCounter.getCopyBlackLarge(),platUserCounter.getSheetsOfPrints(),
+            Object[] objs = new Object[]{platUserCounter.getId(),platUserCounter.getDeptName(),platUserCounter.getUserName(),platUserCounter.getDeviceIp(),platUserCounter.getDeviceId(),platUserCounter.getDeviceName(),platUserCounter.getColorTotal(),platUserCounter.getScanFaxScans(),
+            platUserCounter.getMonochromeTotal(),platUserCounter.getAllTotal(),platUserCounter.getTotal(),platUserCounter.getCopyFullColor(),platUserCounter.getFaxTx(),platUserCounter.getFaxRx(),platUserCounter.getDuplexTotal(),platUserCounter.getSingleTotal(),platUserCounter.getNumberOfOriginals(),platUserCounter.getCopyBlackLarge(),platUserCounter.getSheetsOfPrints(),
             platUserCounter.getPrintTotalLarge(),platUserCounter.getPrintFullColorLarge(),platUserCounter.getRectime(),platUserCounter.getIsReport()};
             //将转换好的数据 存入dataList
             dataList.add(objs);
